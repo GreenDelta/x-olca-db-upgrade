@@ -63,6 +63,9 @@ public class Mapper<T> {
 			} else if (isInt(field)) {
 				int value = set.getInt(name);
 				field.setInt(instance, value);
+			} else if (isBool(field)) {
+				boolean value = set.getBoolean(name);
+				field.setBoolean(instance, value);
 			}
 		}
 		return instance;
@@ -78,6 +81,10 @@ public class Mapper<T> {
 
 	private boolean isInt(Field field) {
 		return Objects.equals(field.getType(), int.class);
+	}
+
+	private boolean isBool(Field field) {
+		return Objects.equals(field.getType(), boolean.class);
 	}
 
 }
