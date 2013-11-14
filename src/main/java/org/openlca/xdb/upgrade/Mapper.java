@@ -60,6 +60,9 @@ public class Mapper<T> {
 			} else if (isDouble(field)) {
 				double value = set.getDouble(name);
 				field.setDouble(instance, value);
+			} else if (isInt(field)) {
+				int value = set.getInt(name);
+				field.setInt(instance, value);
 			}
 		}
 		return instance;
@@ -71,6 +74,10 @@ public class Mapper<T> {
 
 	private boolean isDouble(Field field) {
 		return Objects.equals(field.getType(), double.class);
+	}
+
+	private boolean isInt(Field field) {
+		return Objects.equals(field.getType(), int.class);
 	}
 
 }

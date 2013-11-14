@@ -38,7 +38,6 @@ class UnitGroup {
 				+ "f_default_flow_property) " + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		InsertHandler handler = new InsertHandler(groups, index);
 		NativeSql.on(newDb).batchInsert(insertStmt, groups.size(), handler);
-		// TODO: remove old categories
 	}
 
 	private static class InsertHandler extends AbstractInsertHandler<UnitGroup> {
