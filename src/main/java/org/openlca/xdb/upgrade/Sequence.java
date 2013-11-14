@@ -14,13 +14,14 @@ public class Sequence {
 	public static final int FLOW_PROPERTY = 3;
 	public static final int LOCATION = 4;
 	public static final int FLOW = 5;
+	public static final int FLOW_PROPERTY_FACTOR = 6;
 
 	private final HashMap<String, Integer>[] sequences;
 	private int seqCount = 0;
 
 	@SuppressWarnings("unchecked")
 	public Sequence() {
-		sequences = new HashMap[6];
+		sequences = new HashMap[7];
 		for (int i = 0; i < sequences.length; i++)
 			sequences[i] = new HashMap<>();
 	}
