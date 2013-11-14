@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
+import java.util.Objects;
 
 import org.openlca.core.database.IDatabase;
 import org.openlca.core.database.NativeSql;
