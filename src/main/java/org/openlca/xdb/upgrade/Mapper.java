@@ -61,13 +61,16 @@ class Mapper<T> {
 				double value = set.getDouble(name);
 				field.setDouble(instance, value);
 			} else if (isDoubleObj(field)) {
-				Double value = null;
 				double d = set.getDouble(name);
-				value = set.wasNull() ? null : d;
+				Double value = set.wasNull() ? null : d;
 				field.set(instance, value);
 			} else if (isInt(field)) {
 				int value = set.getInt(name);
 				field.setInt(instance, value);
+			} else if (isIntObj(field)) {
+				int i = set.getInt(name);
+				Integer value = set.wasNull() ? null : i;
+				field.set(instance, value);
 			} else if (isBool(field)) {
 				boolean value = set.getBoolean(name);
 				field.setBoolean(instance, value);
@@ -90,6 +93,10 @@ class Mapper<T> {
 
 	private boolean isInt(Field field) {
 		return Objects.equals(field.getType(), int.class);
+	}
+
+	private boolean isIntObj(Field field) {
+		return Objects.equals(field.getType(), Integer.class);
 	}
 
 	private boolean isBool(Field field) {

@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
+import java.util.Objects;
 
 import org.openlca.core.database.IDatabase;
 import org.openlca.core.database.NativeSql;
@@ -17,7 +18,7 @@ class Exchange {
 	private boolean avoidedproduct;
 
 	@DbField("distributionType")
-	private int distributionType;
+	private Integer distributionType;
 
 	@DbField("input")
 	private boolean input;
@@ -95,6 +96,7 @@ class Exchange {
 		@Override
 		protected void map(Exchange exchange, PreparedStatement stmt)
 				throws SQLException {
+			checkFormulas(exchange);
 			// id
 			stmt.setInt(1, seq.get(Sequence.EXCHANGE, exchange.id));
 			// f_owner
@@ -121,35 +123,55 @@ class Exchange {
 				stmt.setInt(10,
 						seq.get(Sequence.PROCESS, exchange.defaultProviderId));
 			// distribution_type
+			if (exchange.distributionType == null)
+				stmt.setNull(11, Types.INTEGER);
+			else
+				stmt.setInt(11, exchange.distributionType);
 			// parameter1_value
+			if (exchange.parameter1Value == null)
+				stmt.setNull(12, Types.DOUBLE);
+			else
+				stmt.setDouble(12, exchange.parameter1Value);
 			// parameter1_formula
-			// parameter2_value
-			// parameter2_formula
-			// parameter3_value
-			// parameter3_formula
-			// pedigree_uncertainty
-			// base_uncertainty
-
-			stmt.setString(3, exchange.avoidedproduct);
-			stmt.setString(4, exchange.distributionType);
-			stmt.setString(5, exchange.input);
-			stmt.setString(6, exchange.propertyFactorId);
-			stmt.setString(7, exchange.unitId);
-			stmt.setString(8, exchange.flowId);
-			stmt.setString(9, exchange.parametrized);
-			stmt.setString(10, exchange.resultingamountValue);
-
-			stmt.setString(12, exchange.parameter1Value);
 			stmt.setString(13, exchange.parameter1Formula);
-			stmt.setString(14, exchange.parameter2Value);
+			// parameter2_value
+			if (exchange.parameter2Value == null)
+				stmt.setNull(14, Types.DOUBLE);
+			else
+				stmt.setDouble(14, exchange.parameter2Value);
+			// parameter2_formula
 			stmt.setString(15, exchange.parameter2Formula);
-			stmt.setString(16, exchange.parameter3Value);
+			// parameter3_value
+			if (exchange.parameter3Value == null)
+				stmt.setNull(16, Types.DOUBLE);
+			else
+				stmt.setDouble(16, exchange.parameter3Value);
+			// parameter3_formula
 			stmt.setString(17, exchange.parameter3Formula);
-			stmt.setString(18, exchange.processId);
-			stmt.setString(19, exchange.pedigreeUncertainty);
-			stmt.setString(20, exchange.baseUncertainty);
-			stmt.setString(21, exchange.defaultProviderId);
+			// pedigree_uncertainty
+			stmt.setString(18, exchange.pedigreeUncertainty);
+			// base_uncertainty
+			if (exchange.baseUncertainty == null)
+				stmt.setNull(19, Types.DOUBLE);
+			else
+				stmt.setDouble(19, exchange.baseUncertainty);
+		}
 
+		private void checkFormulas(Exchange e) {
+			if (shouldDeleteFormula(e.parameter1Value, e.parameter1Formula))
+				e.parameter1Formula = null;
+			if (shouldDeleteFormula(e.parameter2Value, e.parameter2Formula))
+				e.parameter2Formula = null;
+			if (shouldDeleteFormula(e.parameter3Value, e.parameter3Formula))
+				e.parameter3Formula = null;
+		}
+
+		private boolean shouldDeleteFormula(Double val, String formula) {
+			if (formula == null)
+				return false;
+			if (val == null)
+				return true;
+			return Objects.equals(val.toString(), formula);
 		}
 	}
 }
