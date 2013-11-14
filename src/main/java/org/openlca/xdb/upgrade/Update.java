@@ -28,6 +28,7 @@ public class Update implements Runnable {
 			Flow.map(oldDb, newDb, seq);
 			FlowPropertyFactor.map(oldDb, newDb, seq);
 			Actor.map(oldDb, newDb, seq);
+			Source.map(oldDb, newDb, seq);
 			seq.write(newDb);
 		} catch (Exception e) {
 			log.error("update failed", e);
