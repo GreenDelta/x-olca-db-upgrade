@@ -19,15 +19,16 @@ public class Update implements Runnable {
 	public void run() {
 		try {
 			log.trace("run update");
-			Sequence index = new Sequence();
-			Category.map(oldDb, newDb, index);
-			Unit.map(oldDb, newDb, index);
-			UnitGroup.map(oldDb, newDb, index);
-			FlowProperty.map(oldDb, newDb, index);
-			Location.map(oldDb, newDb, index);
-			Flow.map(oldDb, newDb, index);
-			FlowPropertyFactor.map(oldDb, newDb, index);
-			index.write(newDb);
+			Sequence seq = new Sequence();
+			Category.map(oldDb, newDb, seq);
+			Unit.map(oldDb, newDb, seq);
+			UnitGroup.map(oldDb, newDb, seq);
+			FlowProperty.map(oldDb, newDb, seq);
+			Location.map(oldDb, newDb, seq);
+			Flow.map(oldDb, newDb, seq);
+			FlowPropertyFactor.map(oldDb, newDb, seq);
+			Actor.map(oldDb, newDb, seq);
+			seq.write(newDb);
 		} catch (Exception e) {
 			log.error("update failed", e);
 			throw new RuntimeException("Update failed", e);
