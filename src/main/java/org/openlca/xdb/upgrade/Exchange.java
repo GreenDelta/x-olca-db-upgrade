@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
-import java.util.Objects;
 
 import org.openlca.core.database.IDatabase;
 import org.openlca.core.database.NativeSql;
@@ -171,7 +170,12 @@ class Exchange {
 				return false;
 			if (val == null)
 				return true;
-			return Objects.equals(val.toString(), formula);
+			try {
+				Double.parseDouble(formula);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
 		}
 	}
 }
