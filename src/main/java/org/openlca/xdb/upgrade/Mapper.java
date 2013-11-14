@@ -13,7 +13,7 @@ import org.openlca.core.database.NativeSql.QueryResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Mapper<T> {
+class Mapper<T> {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Class<T> clazz;
@@ -60,6 +60,11 @@ public class Mapper<T> {
 			} else if (isDouble(field)) {
 				double value = set.getDouble(name);
 				field.setDouble(instance, value);
+			} else if (isDoubleObj(field)) {
+				Double value = null;
+				double d = set.getDouble(name);
+				value = set.wasNull() ? null : d;
+				field.set(instance, value);
 			} else if (isInt(field)) {
 				int value = set.getInt(name);
 				field.setInt(instance, value);
@@ -77,6 +82,10 @@ public class Mapper<T> {
 
 	private boolean isDouble(Field field) {
 		return Objects.equals(field.getType(), double.class);
+	}
+
+	private boolean isDoubleObj(Field field) {
+		return Objects.equals(field.getType(), Double.class);
 	}
 
 	private boolean isInt(Field field) {
