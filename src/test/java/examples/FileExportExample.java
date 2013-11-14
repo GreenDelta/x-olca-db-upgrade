@@ -8,9 +8,7 @@ import org.openlca.xdb.upgrade.OldDatabase;
 public class FileExportExample {
 
 	public static void main(String[] args) {
-
 		try {
-
 			String oldDbUrl = "jdbc:mysql://localhost:3306/epa_db";
 			OldDatabase oldDb = new OldDatabase(oldDbUrl, "root", "");
 			File exportFile = new File("C:/Users/Besitzer/Desktop/epa_db.zolca");
@@ -20,7 +18,6 @@ public class FileExportExample {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }

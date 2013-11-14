@@ -1,24 +1,19 @@
+// this is a script for creating the stubs of the mapping types
 
 
+def type = "Process"
+def var = "proc"
 
-def type = "Exchange"
-def var = "exchange"
+def oldFieldsStr = "id, processtype, allocationmethod, infrastructureprocess, geographycomment, description, name, categoryid, f_quantitativereference, f_location"
+def newFieldsStr = "id, ref_id, name, f_category, description, process_type, default_allocation_method, infrastructure_process, f_quantitative_reference, f_location, f_process_doc"
 
-/*
-def fields = "id, f_owner, f_flow, f_unit, is_input, f_flow_property_factor, resulting_amount_value, resulting_amount_formula, avoided_product, f_default_provider, distribution_type, parameter1_value, parameter1_formula, parameter2_value, parameter2_formula, parameter3_value, parameter3_formula, pedigree_uncertainty, base_uncertainty"
-fields.split(", ").each {f ->
-    println "//$f"
+def oldFields = oldFieldsStr.split(", ")
+def newFields = newFieldsStr.split(", ")
+
+def placeHolder = "?"
+(newFields.size() - 1).times {
+    placeHolder += ", ?"
 }
-*/
-
-
-def fields = [
-"id", "avoidedproduct", "distributionType", "input", "f_flowpropertyfactor", 
-"f_unit", "f_flow", "parametrized", "resultingamount_value", "resultingamount_formula", 
-"parameter1_value", "parameter1_formula", "parameter2_value", "parameter2_formula", 
-"parameter3_value", "parameter3_formula", "f_owner", "pedigree_uncertainty", 
-"base_uncertainty", "f_default_provider"
-]
 
 println """
 package org.openlca.xdb.upgrade;
@@ -31,9 +26,11 @@ import org.openlca.core.database.IDatabase;
 import org.openlca.core.database.NativeSql;
 
 class $type {
+
+    // TODO: check the field types
 """
 
-fields.each { f ->
+oldFields.each { f ->
 
     println """
     @DbField("$f")
@@ -44,12 +41,13 @@ fields.each { f ->
 println """
     public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
             throws Exception {
+        // TODO: check the query + table name
         String query = "SELECT * FROM tbl_${type.toLowerCase()}s";
         Mapper<${type}> mapper = new Mapper<>(${type}.class);
         List<${type}> ${var}s = mapper.mapAll(oldDb, query);
-        String insertStmt = "INSERT INTO tbl_${type.toLowerCase()}s(id, ref_id, name, "
-                + "description, model_type, f_parent_category) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+        // TODO: check the query + table name
+        String insertStmt = "INSERT INTO tbl_${type.toLowerCase()}s(${newFieldsStr}) "
+                + "VALUES ($placeHolder)";
         Handler handler = new Handler(${var}s, seq);
         NativeSql.on(newDb).batchInsert(insertStmt, ${var}s.size(), handler);
     }
@@ -67,8 +65,16 @@ println """
         @Override
         protected void map($type ${var}, PreparedStatement stmt)
                 throws SQLException {
+                
+        // TODO: new fields that need to be set in this order
 """
-fields.eachWithIndex { f,i ->
+newFields.each { f ->
+       println "\t\t // $f \n"
+}
+
+println "\t\t // prototypes for the mappings"
+
+oldFields.eachWithIndex { f,i ->
     if(i == 0) {
         println "stmt.setInt(1, seq.get(Sequence.${type.toUpperCase()}, ${var}.${f}));"
         println "stmt.setString(2, ${var}.${f});"
@@ -76,12 +82,12 @@ fields.eachWithIndex { f,i ->
     else
         println "stmt.setString(${i+2}, ${var}.${f});"
 }
-println """
-            if(Category.isNull(${var}.categoryId))
-                stmt.setNull(#x, java.sql.Types.INTEGER);
-            else
-                stmt.setInt(#x, seq.get(Sequence.CATEGORY, ${var}.categoryId));
-
+println """ // if there is a category field use this pattern
+            // if(Category.isNull(${var}.categoryId))
+            //    stmt.setNull(#x, java.sql.Types.INTEGER);
+            // else
+            //    stmt.setInt(#x, seq.get(Sequence.CATEGORY, ${var}.categoryId));
+            
         }
     }
 }

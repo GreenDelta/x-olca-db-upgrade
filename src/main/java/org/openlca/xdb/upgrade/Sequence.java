@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.openlca.core.database.IDatabase;
 import org.openlca.core.database.NativeSql;
 
-public class Sequence {
+class Sequence {
 
 	public static final int CATEGORY = 0;
 	public static final int UNIT = 1;
