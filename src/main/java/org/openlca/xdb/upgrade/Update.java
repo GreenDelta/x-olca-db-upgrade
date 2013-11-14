@@ -24,6 +24,7 @@ public class Update implements Runnable {
 			Unit.map(oldDb, newDb, index);
 			UnitGroup.map(oldDb, newDb, index);
 			FlowProperty.map(oldDb, newDb, index);
+			Location.map(oldDb, newDb, index);
 			index.write(newDb);
 		} catch (Exception e) {
 			log.error("update failed", e);
