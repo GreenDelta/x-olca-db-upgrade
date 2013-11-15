@@ -27,5 +27,6 @@ TODO
 * NW sets and factors
 * parameters
 * process groups
+* process sources
 * product systems, process links, processes
 * projects

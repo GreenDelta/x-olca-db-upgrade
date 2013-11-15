@@ -33,6 +33,8 @@ public class Update implements Runnable {
 			Process.map(oldDb, newDb, seq);
 			ProcessDoc.map(oldDb, newDb, seq);
 			ProductSystem.map(oldDb, newDb, seq);
+			ProcessLink.map(oldDb, newDb, seq);
+			ProductSystemProcess.map(oldDb, newDb, seq);
 			seq.write(newDb);
 		} catch (Exception e) {
 			log.error("update failed", e);
