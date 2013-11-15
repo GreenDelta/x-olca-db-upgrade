@@ -84,17 +84,23 @@ oldFields.eachWithIndex { f,i ->
 }
 println """ 
 
-            // if there is a category field use this pattern
+            // template for category references
             // if(Category.isNull(${var}.categoryId))
             //    stmt.setNull(#x, java.sql.Types.INTEGER);
             // else
             //    stmt.setInt(#x, seq.get(Sequence.CATEGORY, ${var}.categoryId));
             
-            // if there are optional references use this pattern
+            // template for optional references
             // if(${var}.optRefId == null) 
             //    stmt.setNull(#x, java.sql.Types.INTEGER);
             // else
             //    stmt.setInt(#x, seq.get(Sequence.REFTYPE, ${var}.optRefId));    
+            
+            // template for optional double fields
+            // if(${var}.DOUBLE == null)
+            // 	  stmt.setNull(#x, java.sql.Types.DOUBLE);
+            // else
+            // 	  stmt.setDouble(#x, ${var}.DOUBLE);
             
         }
     }

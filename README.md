@@ -17,6 +17,7 @@ The following entities are mapped:
 * Sources
 * Units
 * Unit groups
+* product systems, process links, processes
 
 TODO
 ----
@@ -28,5 +29,4 @@ TODO
 * parameters
 * process groups
 * process sources
-* product systems, process links, processes
 * projects
