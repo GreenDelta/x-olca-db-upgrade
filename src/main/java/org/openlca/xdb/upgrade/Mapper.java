@@ -1,6 +1,7 @@
 package org.openlca.xdb.upgrade;
 
 import java.lang.reflect.Field;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -74,6 +75,9 @@ class Mapper<T> {
 			} else if (isBool(field)) {
 				boolean value = set.getBoolean(name);
 				field.setBoolean(instance, value);
+			} else if (isDate(field)) {
+				Date value = set.getDate(name);
+				field.set(instance, value);
 			}
 		}
 		return instance;
@@ -101,6 +105,10 @@ class Mapper<T> {
 
 	private boolean isBool(Field field) {
 		return Objects.equals(field.getType(), boolean.class);
+	}
+
+	private boolean isDate(Field field) {
+		return Objects.equals(field.getType(), Date.class);
 	}
 
 }
