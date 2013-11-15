@@ -18,15 +18,15 @@ The following entities are mapped:
 * Units
 * Unit groups
 * product systems, process links, processes
+* LCIA methods, categories, and factors
 
 TODO
 ----
+* parameters
 * technology comments
 * allocation factors
 * cost categories and process cost entries
-* LCIA methods, categories, and factors
 * NW sets and factors
-* parameters
 * process groups
 * process sources
 * projects
