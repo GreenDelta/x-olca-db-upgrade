@@ -82,11 +82,19 @@ oldFields.eachWithIndex { f,i ->
     else
         println "stmt.setString(${i+2}, ${var}.${f});"
 }
-println """ // if there is a category field use this pattern
+println """ 
+
+            // if there is a category field use this pattern
             // if(Category.isNull(${var}.categoryId))
             //    stmt.setNull(#x, java.sql.Types.INTEGER);
             // else
             //    stmt.setInt(#x, seq.get(Sequence.CATEGORY, ${var}.categoryId));
+            
+            // if there are optional references use this pattern
+            // if(${var}.optRefId == null) 
+            //    stmt.setNull(#x, java.sql.Types.INTEGER);
+            // else
+            //    stmt.setInt(#x, seq.get(Sequence.REFTYPE, ${var}.optRefId));    
             
         }
     }
