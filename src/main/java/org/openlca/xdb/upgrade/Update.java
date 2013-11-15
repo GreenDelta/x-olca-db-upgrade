@@ -32,6 +32,7 @@ public class Update implements Runnable {
 			Exchange.map(oldDb, newDb, seq);
 			Process.map(oldDb, newDb, seq);
 			ProcessDoc.map(oldDb, newDb, seq);
+			ProductSystem.map(oldDb, newDb, seq);
 			seq.write(newDb);
 		} catch (Exception e) {
 			log.error("update failed", e);
