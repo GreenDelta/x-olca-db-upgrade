@@ -42,6 +42,8 @@ public class Update implements Runnable {
 			ProcessSource.map(oldDb, newDb, seq);
 			NormalizationWeightingSet.map(oldDb, newDb, seq);
 			NormalizationWeightingFactor.map(oldDb, newDb, seq);
+			Project.map(oldDb, newDb, seq);
+			ProjectVariant.map(oldDb, newDb, seq);
 			seq.write(newDb);
 		} catch (Exception e) {
 			log.error("update failed", e);

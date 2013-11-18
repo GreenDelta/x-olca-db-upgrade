@@ -19,10 +19,10 @@ The following entities are mapped:
 * LCIA methods, categories, and factors
 * Parameters (*)
 * NW sets and factors
+* Projects
 
 TODO
 ----
-* projects
 * technology comments
 * allocation factors
 * cost categories and process cost entries

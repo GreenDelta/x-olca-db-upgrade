@@ -23,13 +23,14 @@ class Sequence {
 	public static final int IMPACT_METHOD = 12;
 	public static final int IMPACT_CATEGORY = 13;
 	public static final int NW_SET = 14;
+	public static final int PROJECT = 15;
 
 	private final HashMap<String, Integer>[] sequences;
 	private int seqCount = 0;
 
 	@SuppressWarnings("unchecked")
 	public Sequence() {
-		sequences = new HashMap[15];
+		sequences = new HashMap[16];
 		for (int i = 0; i < sequences.length; i++)
 			sequences[i] = new HashMap<>();
 	}
