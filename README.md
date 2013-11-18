@@ -19,14 +19,20 @@ The following entities are mapped:
 * Unit groups
 * product systems, process links, processes
 * LCIA methods, categories, and factors
+* parameters (*)
+
 
 TODO
 ----
-* parameters
+* process sources
+* projects
 * technology comments
 * allocation factors
 * cost categories and process cost entries
 * NW sets and factors
 * process groups
-* process sources
-* projects
+
+(*) Product system parameters cannot be converted to the new openLCA database 
+format. In openLCA 1.3 product system parameters were just matched by name 
+where in openLCA 1.4 product system parameters are redefinitions of existing
+global or process parameters.

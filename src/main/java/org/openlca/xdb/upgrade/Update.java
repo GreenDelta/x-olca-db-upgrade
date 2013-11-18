@@ -38,6 +38,7 @@ public class Update implements Runnable {
 			ImpactMethod.map(oldDb, newDb, seq);
 			ImpactCategory.map(oldDb, newDb, seq);
 			ImpactFactor.map(oldDb, newDb, seq);
+			Parameter.map(oldDb, newDb, seq);
 			seq.write(newDb);
 		} catch (Exception e) {
 			log.error("update failed", e);
