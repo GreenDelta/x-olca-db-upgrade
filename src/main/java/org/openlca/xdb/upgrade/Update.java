@@ -39,6 +39,9 @@ public class Update implements Runnable {
 			ImpactCategory.map(oldDb, newDb, seq);
 			ImpactFactor.map(oldDb, newDb, seq);
 			Parameter.map(oldDb, newDb, seq);
+			ProcessSource.map(oldDb, newDb, seq);
+			NormalizationWeightingSet.map(oldDb, newDb, seq);
+			NormalizationWeightingFactor.map(oldDb, newDb, seq);
 			seq.write(newDb);
 		} catch (Exception e) {
 			log.error("update failed", e);
