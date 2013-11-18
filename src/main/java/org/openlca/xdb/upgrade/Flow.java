@@ -5,10 +5,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.NativeSql;
-import org.openlca.core.model.FlowType;
-
 class Flow {
 
 	@DbField("id")
@@ -85,13 +81,13 @@ class Flow {
 		private String mapType(int flowType) {
 			switch (flowType) {
 			case 0:
-				return FlowType.ELEMENTARY_FLOW.name();
+				return "ELEMENTARY_FLOW";
 			case 1:
-				return FlowType.PRODUCT_FLOW.name();
+				return "PRODUCT_FLOW";
 			case 2:
-				return FlowType.WASTE_FLOW.name();
+				return "WASTE_FLOW";
 			default:
-				return FlowType.PRODUCT_FLOW.name();
+				return "PRODUCT_FLOW";
 			}
 		}
 	}

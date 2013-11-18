@@ -1,7 +1,7 @@
 package examples;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.mysql.MySQLDatabase;
+import org.openlca.xdb.upgrade.IDatabase;
+import org.openlca.xdb.upgrade.MySQLDatabase;
 import org.openlca.xdb.upgrade.OldDatabase;
 import org.openlca.xdb.upgrade.Update;
 

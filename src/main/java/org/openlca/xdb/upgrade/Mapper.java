@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.NativeSql;
-import org.openlca.core.database.NativeSql.QueryResultHandler;
+import org.openlca.xdb.upgrade.NativeSql.QueryResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

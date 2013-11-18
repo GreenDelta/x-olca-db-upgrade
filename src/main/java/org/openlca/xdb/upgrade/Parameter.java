@@ -5,10 +5,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.NativeSql;
-import org.openlca.core.model.ParameterScope;
-
 class Parameter {
 
 	@DbField("id")
@@ -71,9 +67,9 @@ class Parameter {
 				stmt.setNull(5, Types.INTEGER);
 			// scope
 			if (parameter.type == 0)
-				stmt.setString(6, ParameterScope.PROCESS.name());
+				stmt.setString(6, "PROCESS");
 			else
-				stmt.setString(6, ParameterScope.GLOBAL.name());
+				stmt.setString(6, "GLOBAL");
 			// value
 			stmt.setDouble(7, parameter.expression_value);
 			// formula

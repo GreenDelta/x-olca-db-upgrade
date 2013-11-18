@@ -5,9 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.NativeSql;
-
 class ProjectVariant {
 
 	@DbField("id")

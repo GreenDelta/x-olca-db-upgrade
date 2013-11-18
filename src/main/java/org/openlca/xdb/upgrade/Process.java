@@ -4,11 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.NativeSql;
-import org.openlca.core.model.AllocationMethod;
-import org.openlca.core.model.ProcessType;
-
 class Process {
 
 	@DbField("id")
@@ -78,9 +73,8 @@ class Process {
 			// description
 			stmt.setString(5, proc.description);
 			// process_type
-			stmt.setString(6,
-					proc.processType == 0 ? ProcessType.LCI_RESULT.name()
-							: ProcessType.UNIT_PROCESS.name());
+			stmt.setString(6, proc.processType == 0 ? "LCI_RESULT"
+					: "UNIT_PROCESS");
 			// default_allocation_method
 			stmt.setString(7, mapAllocationMethod(proc.allocationMethod));
 			// infrastructure_process
@@ -102,15 +96,15 @@ class Process {
 				return null;
 			switch (allocationMethod) {
 			case 0:
-				return AllocationMethod.CAUSAL.name();
+				return "CAUSAL";
 			case 1:
-				return AllocationMethod.ECONOMIC.name();
+				return "ECONOMIC";
 			case 2:
-				return AllocationMethod.NONE.name();
+				return "NONE";
 			case 3:
-				return AllocationMethod.PHYSICAL.name();
+				return "PHYSICAL";
 			default:
-				return AllocationMethod.NONE.name();
+				return "NONE";
 			}
 		}
 	}

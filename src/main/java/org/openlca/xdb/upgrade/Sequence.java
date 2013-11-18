@@ -3,9 +3,6 @@ package org.openlca.xdb.upgrade;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.NativeSql;
-
 class Sequence {
 
 	public static final int CATEGORY = 0;

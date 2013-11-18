@@ -4,9 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.NativeSql;
-
 class ProcessSource {
 
 	@DbField("f_modelingandvalidation")

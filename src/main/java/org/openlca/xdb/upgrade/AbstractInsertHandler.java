@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.openlca.core.database.NativeSql.BatchInsertHandler;
+import org.openlca.xdb.upgrade.NativeSql.BatchInsertHandler;
 
 abstract class AbstractInsertHandler<T> implements BatchInsertHandler {
 

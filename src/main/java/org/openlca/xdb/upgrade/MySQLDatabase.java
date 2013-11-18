@@ -1,6 +1,5 @@
 package org.openlca.xdb.upgrade;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -11,18 +10,25 @@ import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 
 /**
- * An old openLCA database. Implements only the parts of the database interface
- * that are used for the update.
+ * IDatabase implementation for MySQL database. The URL schema is
+ * "jdbc:mysql://" [host] ":" [port] "/" [database]
  */
-public class OldDatabase implements IDatabase {
+public class MySQLDatabase implements IDatabase {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	private String url;
 	private String user;
 	private String password;
 	private BoneCP connectionPool;
+	private final String persistenceUnit;
 
-	public OldDatabase(String url, String user, String password) {
+	public MySQLDatabase(String url, String user, String password) {
+		this(url, user, password, "openLCA");
+	}
+
+	public MySQLDatabase(String url, String user, String password,
+			String persistenceUnit) {
+		this.persistenceUnit = persistenceUnit;
 		this.url = url;
 		if (!this.url.contains("rewriteBatchedStatements")
 				&& this.url.contains("useServerPrepStmts")) {
@@ -32,10 +38,11 @@ public class OldDatabase implements IDatabase {
 		}
 		this.user = user;
 		this.password = password;
-		initConnectionPool();
+		connect();
 	}
 
-	private void initConnectionPool() {
+	private void connect() {
+		log.trace("Connect to database mysql: {} @ {}", user, url);
 		try {
 			BoneCPConfig config = new BoneCPConfig();
 			config.setJdbcUrl(url);
@@ -45,19 +52,6 @@ public class OldDatabase implements IDatabase {
 		} catch (Exception e) {
 			log.error("failed to initialize connection pool", e);
 			throw new RuntimeException("Could not create a connection", e);
-		}
-	}
-
-	@Override
-	public void close() throws IOException {
-		log.trace("close database mysql: {} @ {}", user, url);
-		try {
-			if (connectionPool != null)
-				connectionPool.shutdown();
-		} catch (Exception e) {
-			log.error("failed to close database", e);
-		} finally {
-			connectionPool = null;
 		}
 	}
 
@@ -80,6 +74,18 @@ public class OldDatabase implements IDatabase {
 	}
 
 	@Override
+	public void close() {
+		log.trace("close database mysql: {} @ {}", user, url);
+		try {
+			if (connectionPool != null)
+				connectionPool.shutdown();
+		} catch (Exception e) {
+			log.error("failed to close database", e);
+		} finally {
+			connectionPool = null;
+		}
+	}
+
 	public String getName() {
 		if (url == null)
 			return null;
@@ -88,5 +94,4 @@ public class OldDatabase implements IDatabase {
 			return null;
 		return parts[parts.length - 1].trim();
 	}
-
 }

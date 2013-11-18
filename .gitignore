@@ -1,2 +1,5 @@
 /target
 *.log
+
+# openLCA database exchange files
+*.zolca

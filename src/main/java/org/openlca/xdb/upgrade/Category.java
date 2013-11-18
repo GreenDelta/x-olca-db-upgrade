@@ -5,10 +5,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openlca.core.database.IDatabase;
-import org.openlca.core.database.NativeSql;
-import org.openlca.core.model.ModelType;
-
 class Category {
 
 	@DbField("id")
@@ -72,7 +68,7 @@ class Category {
 			stmt.setString(2, refId);
 			stmt.setString(3, category.name);
 			stmt.setString(4, null);
-			stmt.setString(5, mapType(category.className).name());
+			stmt.setString(5, mapType(category.className));
 			String parentRef = category.parentCategoryId;
 			if (isNull(parentRef))
 				stmt.setNull(6, java.sql.Types.INTEGER);
@@ -80,30 +76,30 @@ class Category {
 				stmt.setInt(6, seq.get(Sequence.CATEGORY, parentRef));
 		}
 
-		private ModelType mapType(String className) {
+		private String mapType(String className) {
 			if (className == null)
-				return ModelType.UNKNOWN;
+				return "UNKNOWN";
 			switch (className) {
 			case "org.openlca.core.model.Actor":
-				return ModelType.ACTOR;
+				return "ACTOR";
 			case "org.openlca.core.model.Flow":
-				return ModelType.FLOW;
+				return "FLOW";
 			case "org.openlca.core.model.FlowProperty":
-				return ModelType.FLOW_PROPERTY;
+				return "FLOW_PROPERTY";
 			case "org.openlca.core.model.LCIAMethod":
-				return ModelType.IMPACT_METHOD;
+				return "IMPACT_METHOD";
 			case "org.openlca.core.model.Process":
-				return ModelType.PROCESS;
+				return "PROCESS";
 			case "org.openlca.core.model.ProductSystem":
-				return ModelType.PRODUCT_SYSTEM;
+				return "PRODUCT_SYSTEM";
 			case "org.openlca.core.model.Project":
-				return ModelType.PROJECT;
+				return "PROJECT";
 			case "org.openlca.core.model.Source":
-				return ModelType.SOURCE;
+				return "SOURCE";
 			case "org.openlca.core.model.UnitGroup":
-				return ModelType.UNIT_GROUP;
+				return "UNIT_GROUP";
 			default:
-				return ModelType.UNKNOWN;
+				return "UNKNOWN";
 			}
 		}
 	}
