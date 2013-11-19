@@ -23,7 +23,7 @@ class ProcessCostEntry {
 
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
-		String query = "SELECT * FROM tbl_process_cost_entries";
+		String query = "SELECT * FROM tbl_product_cost_entries";
 		Mapper<ProcessCostEntry> mapper = new Mapper<>(ProcessCostEntry.class);
 		List<ProcessCostEntry> costs = mapper.mapAll(oldDb, query);
 		String insertStmt = "INSERT INTO tbl_process_cost_entries(id, f_process, "
