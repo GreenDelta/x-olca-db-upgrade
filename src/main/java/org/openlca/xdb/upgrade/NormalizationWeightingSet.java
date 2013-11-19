@@ -46,7 +46,7 @@ class NormalizationWeightingSet {
 			// reference_system
 			stmt.setString(2, nwSet.referencesystem);
 			// f_impact_method
-			stmt.setInt(3, seq.get(Sequence.IMPACT_METHOD, nwSet.id));
+			stmt.setInt(3, seq.get(Sequence.IMPACT_METHOD, nwSet.f_lciamethod));
 			// unit
 			stmt.setString(4, nwSet.unit);
 		}
