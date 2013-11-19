@@ -57,6 +57,10 @@ public class Update implements Runnable {
 			AllocationFactor.map(oldDb, newDb, seq);
 			CausalAllocationFactor.map(oldDb, newDb, seq);
 
+			log(53, "Map costs");
+			CostCategory.map(oldDb, newDb, seq);
+			ProcessCostEntry.map(oldDb, newDb, seq);
+
 			log(55, "Map product systems");
 			ProductSystem.map(oldDb, newDb, seq);
 			ProcessLink.map(oldDb, newDb, seq);

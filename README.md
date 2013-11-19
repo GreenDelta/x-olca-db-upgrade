@@ -21,11 +21,11 @@ The following entities are mapped:
 * NW sets and factors
 * Projects
 * Allocation factors (**)
+* Cost categories and process cost entries
 
 TODO
 ----
 * technology comments
-* cost categories and process cost entries
 * process groups
 
 (*) Product system parameters cannot be converted to the new openLCA database 

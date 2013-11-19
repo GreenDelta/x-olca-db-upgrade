@@ -21,6 +21,7 @@ class Sequence {
 	public static final int IMPACT_CATEGORY = 13;
 	public static final int NW_SET = 14;
 	public static final int PROJECT = 15;
+	public static final int COST_CATEGORY = 16;
 
 	private final HashMap<String, Integer>[] sequences;
 	private int seqCount = 0;
