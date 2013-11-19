@@ -61,7 +61,7 @@ class NormalizationWeightingFactor {
 			stmt.setInt(4,
 					seq.get(Sequence.IMPACT_CATEGORY, factor.f_lciacategory));
 			// f_normalisation_weighting_set
-			stmt.setInt(5, seq.get(Sequence.IMPACT_CATEGORY,
+			stmt.setInt(5, seq.get(Sequence.NW_SET,
 					factor.f_normalizationweightingset));
 		}
 	}
