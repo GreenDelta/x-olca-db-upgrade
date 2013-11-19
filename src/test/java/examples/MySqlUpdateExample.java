@@ -8,9 +8,9 @@ public class MySqlUpdateExample {
 
 	public static void main(String[] args) {
 		try {
-			String oldDbUrl = "jdbc:mysql://localhost:3306/epa_db";
+			String oldDbUrl = "jdbc:mysql://localhost:3306/prosuite";
 			IDatabase oldDb = new MySQLDatabase(oldDbUrl, "root", "");
-			String newDbUrl = "jdbc:mysql://localhost:3306/epa_db_new";
+			String newDbUrl = "jdbc:mysql://localhost:3306/prosuite_new";
 			IDatabase newDb = new MySQLDatabase(newDbUrl, "root", "");
 			Update update = new Update(oldDb, newDb);
 			update.run();

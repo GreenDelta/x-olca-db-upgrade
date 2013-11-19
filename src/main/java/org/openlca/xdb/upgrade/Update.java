@@ -54,6 +54,8 @@ public class Update implements Runnable {
 			Process.map(oldDb, newDb, seq);
 			ProcessDoc.map(oldDb, newDb, seq);
 			ProcessSource.map(oldDb, newDb, seq);
+			AllocationFactor.map(oldDb, newDb, seq);
+			CausalAllocationFactor.map(oldDb, newDb, seq);
 
 			log(55, "Map product systems");
 			ProductSystem.map(oldDb, newDb, seq);

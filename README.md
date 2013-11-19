@@ -20,11 +20,11 @@ The following entities are mapped:
 * Parameters (*)
 * NW sets and factors
 * Projects
+* Allocation factors (**)
 
 TODO
 ----
 * technology comments
-* allocation factors
 * cost categories and process cost entries
 * process groups
 
@@ -32,3 +32,9 @@ TODO
 format. In openLCA 1.3 product system parameters were just matched by name 
 where in openLCA 1.4 product system parameters are redefinitions of existing
 global or process parameters.
+
+(**) In openLCA 1.4 it is possible to create physical, economic, and causal
+allocation factors for a process. In openLCA 1.3 only the factors of one 
+allocation method could be used for a process. The conversion creates factors
+for all allocation methods for a process. Thus, the factors of converted 
+multi-output processes should checked by the user after the conversion.
