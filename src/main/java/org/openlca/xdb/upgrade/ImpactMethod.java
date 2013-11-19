@@ -18,7 +18,7 @@ class ImpactMethod {
 	@DbField("name")
 	private String name;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_lciamethods";
 		Mapper<ImpactMethod> mapper = new Mapper<>(ImpactMethod.class);

@@ -13,7 +13,7 @@ class ProjectVariant {
 	@DbField("productsystems")
 	private String productsystems;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_projects";
 		Mapper<ProjectVariant> mapper = new Mapper<>(ProjectVariant.class);

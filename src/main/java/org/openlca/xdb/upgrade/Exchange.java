@@ -67,7 +67,7 @@ class Exchange {
 	@DbField("f_default_provider")
 	private String defaultProviderId;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_exchanges";
 		Mapper<Exchange> mapper = new Mapper<>(Exchange.class);

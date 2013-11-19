@@ -31,7 +31,7 @@ class Parameter {
 	@DbField("expression_formula")
 	private String expression_formula;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_parameters where type <> 1";
 		Mapper<Parameter> mapper = new Mapper<>(Parameter.class);

@@ -37,7 +37,7 @@ class Flow {
 	@DbField("f_location")
 	private String locationId;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence index)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence index)
 			throws Exception {
 		String query = "SELECT * FROM tbl_flows";
 		Mapper<Flow> mapper = new Mapper<>(Flow.class);

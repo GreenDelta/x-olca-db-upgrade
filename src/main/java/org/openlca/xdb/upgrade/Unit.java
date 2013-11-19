@@ -26,7 +26,7 @@ class Unit {
 	@DbField("f_unitgroup")
 	private String unitGroupId;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence index)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence index)
 			throws Exception {
 		String query = "SELECT * FROM tbl_units";
 		Mapper<Unit> mapper = new Mapper<>(Unit.class);

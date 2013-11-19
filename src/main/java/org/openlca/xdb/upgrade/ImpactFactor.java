@@ -36,7 +36,7 @@ class ImpactFactor {
 	@DbField("uncertainty_parameter_3")
 	private Double uncertainty_parameter_3;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_lciafactors";
 		Mapper<ImpactFactor> mapper = new Mapper<>(ImpactFactor.class);

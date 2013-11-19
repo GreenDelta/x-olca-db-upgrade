@@ -21,7 +21,7 @@ class ImpactCategory {
 	@DbField("f_lciamethod")
 	private String f_lciamethod;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_lciacategories";
 		Mapper<ImpactCategory> mapper = new Mapper<>(ImpactCategory.class);

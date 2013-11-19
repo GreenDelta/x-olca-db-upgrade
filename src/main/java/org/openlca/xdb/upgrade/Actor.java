@@ -42,7 +42,7 @@ class Actor {
 	@DbField("city")
 	private String city;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_actors";
 		Mapper<Actor> mapper = new Mapper<>(Actor.class);

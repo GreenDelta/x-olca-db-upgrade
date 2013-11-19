@@ -12,7 +12,7 @@ class ProductSystemProcess {
 	@DbField("f_process")
 	private String f_process;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_productsystem_process";
 		Mapper<ProductSystemProcess> mapper = new Mapper<>(

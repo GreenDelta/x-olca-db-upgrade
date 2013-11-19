@@ -18,7 +18,7 @@ class FlowPropertyFactor {
 	@DbField("f_flowinformation")
 	private String flowId;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_flowpropertyfactors";
 		Mapper<FlowPropertyFactor> mapper = new Mapper<>(

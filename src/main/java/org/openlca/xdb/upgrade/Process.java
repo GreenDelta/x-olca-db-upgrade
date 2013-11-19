@@ -36,7 +36,7 @@ class Process {
 	@DbField("f_location")
 	private String locationId;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_processes";
 		Mapper<Process> mapper = new Mapper<>(Process.class);

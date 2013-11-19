@@ -32,7 +32,7 @@ class Category {
 			"org.openlca.core.model.UnitGroup");
 	//@formatter:on
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence index)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence index)
 			throws Exception {
 		String query = "SELECT * FROM tbl_categories";
 		Mapper<Category> mapper = new Mapper<>(Category.class);

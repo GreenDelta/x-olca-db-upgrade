@@ -8,11 +8,11 @@ import com.google.common.eventbus.EventBus;
 public class Update implements Runnable {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private OldDatabase oldDb;
+	private IDatabase oldDb;
 	private IDatabase newDb;
 	private EventBus eventBus;
 
-	public Update(OldDatabase oldDb, IDatabase newDb) {
+	public Update(IDatabase oldDb, IDatabase newDb) {
 		this.oldDb = oldDb;
 		this.newDb = newDb;
 	}

@@ -18,7 +18,7 @@ class NormalizationWeightingSet {
 	@DbField("unit")
 	private String unit;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_normalizationweightingsets";
 		Mapper<NormalizationWeightingSet> mapper = new Mapper<>(

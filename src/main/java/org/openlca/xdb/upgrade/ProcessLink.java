@@ -27,7 +27,7 @@ class ProcessLink {
 	@DbField("f_flow")
 	private String f_flow;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT l.*, e.f_flow FROM tbl_processlinks l "
 				+ "join tbl_exchanges e on l.f_provideroutput = e.id";

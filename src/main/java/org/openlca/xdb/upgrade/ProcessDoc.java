@@ -106,7 +106,7 @@ class ProcessDoc {
 	@DbField("comment")
 	private String comment;
 
-	public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * from tbl_processes p "
 				+ "join tbl_admininfos a on p.id = a.id "
