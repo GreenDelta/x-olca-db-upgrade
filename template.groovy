@@ -36,7 +36,7 @@ oldFields.each { f ->
 }
 
 println """
-    public static void map(OldDatabase oldDb, IDatabase newDb, Sequence seq)
+    public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
             throws Exception {
         // TODO: check the query + table name
         String query = "SELECT * FROM tbl_${type.toLowerCase()}s";
