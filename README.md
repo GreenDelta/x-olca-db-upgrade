@@ -23,11 +23,6 @@ The following entities are mapped:
 * Allocation factors (**)
 * Cost categories and process cost entries
 
-TODO
-----
-* technology comments
-* process groups
-
 (*) Product system parameters cannot be converted to the new openLCA database 
 format. In openLCA 1.3 product system parameters were just matched by name 
 where in openLCA 1.4 product system parameters are redefinitions of existing
@@ -38,3 +33,7 @@ allocation factors for a process. In openLCA 1.3 only the factors of one
 allocation method could be used for a process. The conversion creates factors
 for all allocation methods for a process. Thus, the factors of converted 
 multi-output processes should checked by the user after the conversion.
+
+Open issues
+-----------
+Process groups (from the analysis editor) are currently not mapped.
