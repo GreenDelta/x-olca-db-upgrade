@@ -2,9 +2,10 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
-/** Note that this is an update on an existing process-doc table. */
+/**
+ * Note that this is an update on an existing process-doc table.
+ */
 class Technology {
 
 	@DbField("id")
@@ -16,18 +17,21 @@ class Technology {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_technologies";
-		Mapper<Technology> mapper = new Mapper<>(Technology.class);
-		List<Technology> techs = mapper.mapAll(oldDb, query);
-		String insertStmt = "UPDATE tbl_process_docs SET technology = ? "
-				+ " WHERE ID = ?";
-		Handler handler = new Handler(techs, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, techs.size(), handler);
+		Mapper<Technology> mapper = new Mapper<>(Technology.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<Technology> {
+	private static class Handler extends UpdateHandler<Technology> {
 
-		public Handler(List<Technology> techs, Sequence seq) {
-			super(techs, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "UPDATE tbl_process_docs SET technology = ? "
+					+ " WHERE ID = ?";
 		}
 
 		@Override

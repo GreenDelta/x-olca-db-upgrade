@@ -3,7 +3,6 @@ package org.openlca.xdb.upgrade;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 class Exchange {
 
@@ -70,23 +69,26 @@ class Exchange {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_exchanges";
-		Mapper<Exchange> mapper = new Mapper<>(Exchange.class);
-		List<Exchange> exchanges = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_exchanges(id, f_owner, f_flow, "
-				+ "f_unit, is_input, f_flow_property_factor, resulting_amount_value, "
-				+ "resulting_amount_formula, avoided_product, f_default_provider, "
-				+ "distribution_type, parameter1_value, parameter1_formula, "
-				+ "parameter2_value, parameter2_formula, parameter3_value, "
-				+ "parameter3_formula, pedigree_uncertainty, base_uncertainty) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(exchanges, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, exchanges.size(), handler);
+		Mapper<Exchange> mapper = new Mapper<>(Exchange.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<Exchange> {
+	private static class Handler extends UpdateHandler<Exchange> {
 
-		public Handler(List<Exchange> exchanges, Sequence seq) {
-			super(exchanges, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_exchanges(id, f_owner, f_flow, "
+					+ "f_unit, is_input, f_flow_property_factor, resulting_amount_value, "
+					+ "resulting_amount_formula, avoided_product, f_default_provider, "
+					+ "distribution_type, parameter1_value, parameter1_formula, "
+					+ "parameter2_value, parameter2_formula, parameter3_value, "
+					+ "parameter3_formula, pedigree_uncertainty, base_uncertainty) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

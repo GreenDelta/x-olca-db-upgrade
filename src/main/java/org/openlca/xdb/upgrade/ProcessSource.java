@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class ProcessSource {
 
@@ -15,18 +14,22 @@ class ProcessSource {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_modelingandvalidation_source";
-		Mapper<ProcessSource> mapper = new Mapper<>(ProcessSource.class);
-		List<ProcessSource> sources = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_process_sources(f_process_doc, "
-				+ "f_source) " + "VALUES (?, ?)";
-		Handler handler = new Handler(sources, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, sources.size(), handler);
+		Mapper<ProcessSource> mapper = new Mapper<>(ProcessSource.class,
+				oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<ProcessSource> {
+	private static class Handler extends UpdateHandler<ProcessSource> {
 
-		public Handler(List<ProcessSource> sources, Sequence seq) {
-			super(sources, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_process_sources(f_process_doc, "
+					+ "f_source) " + "VALUES (?, ?)";
 		}
 
 		@Override

@@ -1,5 +1,9 @@
 package org.openlca.xdb.upgrade;
 
+import org.openlca.xdb.upgrade.NativeSql.QueryResultHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -8,18 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.openlca.xdb.upgrade.NativeSql.QueryResultHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 class Mapper<T> {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Class<T> clazz;
+	private IDatabase oldDatabase;
+	private IDatabase newDatabase;
 	private List<Field> dbFields = new ArrayList<>();
 
-	public Mapper(Class<T> clazz) {
+	public Mapper(Class<T> clazz, IDatabase oldDatabase,
+	              IDatabase newDatabase) {
 		this.clazz = clazz;
+		this.oldDatabase = oldDatabase;
+		this.newDatabase = newDatabase;
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
 			field.setAccessible(true);
@@ -28,7 +33,30 @@ class Mapper<T> {
 		}
 	}
 
-	public List<T> mapAll(IDatabase db, String query) throws Exception {
+	public void mapAll(String query, final UpdateHandler<T> handler)
+			throws Exception {
+		log.trace("fetch and map from database: {}", query);
+		final int BATCH_SIZE = 5000;
+		final List<T> results = new ArrayList<>();
+		NativeSql.on(oldDatabase).query(query, new QueryResultHandler() {
+			@Override
+			public boolean nextResult(ResultSet result) throws SQLException {
+				try {
+					T t = map(result);
+					results.add(t);
+					if (results.size() >= BATCH_SIZE)
+						flushMappings(results, handler);
+					return true;
+				} catch (Exception e) {
+					log.error("failed to map result", e);
+					throw new RuntimeException(e);
+				}
+			}
+		});
+		flushMappings(results, handler);
+	}
+
+	public List<T> getAll(IDatabase db, String query) throws Exception {
 		log.trace("fetch and map from database: {}", query);
 		final List<T> results = new ArrayList<>();
 		NativeSql.on(db).query(query, new QueryResultHandler() {
@@ -46,6 +74,21 @@ class Mapper<T> {
 		});
 		log.trace("{} results fetched", results.size());
 		return results;
+	}
+
+	private void flushMappings(List<T> results, UpdateHandler<T> handler) {
+		if (results.isEmpty())
+			return;
+		handler.nextBatch(results);
+		log.trace("insert next batch with {} elements", results.size());
+		try {
+			NativeSql.on(newDatabase).batchInsert(handler.getStatement(),
+					results.size(), handler);
+		} catch (Exception e) {
+			log.error("failed to insert batch: " + handler.getStatement(), e);
+		} finally {
+			results.clear();
+		}
 	}
 
 	public T map(ResultSet set) throws Exception {

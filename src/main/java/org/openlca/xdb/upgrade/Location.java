@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class Location {
 
@@ -27,19 +26,22 @@ class Location {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence index)
 			throws Exception {
 		String query = "SELECT * FROM tbl_locations";
-		Mapper<Location> mapper = new Mapper<>(Location.class);
-		List<Location> locations = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_locations(id, ref_id, description, "
-				+ "name, longitude, latitude, code) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(locations, index);
-		NativeSql.on(newDb).batchInsert(insertStmt, locations.size(), handler);
+		Mapper<Location> mapper = new Mapper<>(Location.class, oldDb, newDb);
+		Handler handler = new Handler(index);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<Location> {
+	private static class Handler extends UpdateHandler<Location> {
 
-		public Handler(List<Location> locs, Sequence seq) {
-			super(locs, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_locations(id, ref_id, description, "
+					+ "name, longitude, latitude, code) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

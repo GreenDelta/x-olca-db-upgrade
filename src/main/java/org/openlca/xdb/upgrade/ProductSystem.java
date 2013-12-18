@@ -2,57 +2,57 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class ProductSystem {
 
 	@DbField("id")
-	private String id;
+	String id;
 
 	@DbField("name")
-	private String name;
+	String name;
 
 	@DbField("description")
-	private String description;
+	String description;
 
 	@DbField("categoryid")
-	private String categoryid;
-
-	@DbField("marked")
-	private String marked;
+	String categoryid;
 
 	@DbField("targetamount")
-	private double targetamount;
+	double targetamount;
 
 	@DbField("f_referenceprocess")
-	private String f_referenceprocess;
+	String f_referenceprocess;
 
 	@DbField("f_referenceexchange")
-	private String f_referenceexchange;
+	String f_referenceexchange;
 
 	@DbField("f_targetflowpropertyfactor")
-	private String f_targetflowpropertyfactor;
+	String f_targetflowpropertyfactor;
 
 	@DbField("f_targetunit")
-	private String f_targetunit;
+	String f_targetunit;
 
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_productsystems";
-		Mapper<ProductSystem> mapper = new Mapper<>(ProductSystem.class);
-		List<ProductSystem> systems = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_product_systems(id, ref_id, name, "
-				+ "description, f_category, target_amount, f_reference_process, "
-				+ "f_reference_exchange, f_target_flow_property_factor, f_target_unit) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(systems, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, systems.size(), handler);
+		Mapper<ProductSystem> mapper = new Mapper<>(ProductSystem.class,
+				oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<ProductSystem> {
+	private static class Handler extends UpdateHandler<ProductSystem> {
 
-		public Handler(List<ProductSystem> systems, Sequence seq) {
-			super(systems, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_product_systems(id, ref_id, name, "
+					+ "description, f_category, target_amount, f_reference_process, "
+					+ "f_reference_exchange, f_target_flow_property_factor, f_target_unit) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

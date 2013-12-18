@@ -19,27 +19,29 @@ class AllocationFactor {
 			throws Exception {
 		String query = "SELECT distinct a.value, e.f_owner, e.f_flow FROM "
 				+ "tbl_allocationfactors a join tbl_exchanges e on a.productid = e.id";
-		Mapper<AllocationFactor> mapper = new Mapper<>(AllocationFactor.class);
-		List<AllocationFactor> factors = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_allocation_factors(id, "
-				+ "allocation_type, value, f_process, f_product) "
-				+ "VALUES (?, ?, ?, ?, ?)";
-		Handler ecoHandler = new Handler(factors, seq, "ECONOMIC");
-		Handler physHandler = new Handler(factors, seq, "PHYSICAL");
-		NativeSql.on(newDb).batchInsert(insertStmt, factors.size(), ecoHandler);
-		NativeSql.on(newDb)
-				.batchInsert(insertStmt, factors.size(), physHandler);
+		Mapper<AllocationFactor> mapper = new Mapper<>(
+				AllocationFactor.class, oldDb, newDb);
+		Handler ecoHandler = new Handler(seq, "ECONOMIC");
+		Handler physHandler = new Handler(seq, "PHYSICAL");
+		mapper.mapAll(query, ecoHandler);
+		mapper.mapAll(query, physHandler);
 	}
 
 	private static class Handler extends
-			AbstractInsertHandler<AllocationFactor> {
+			UpdateHandler<AllocationFactor> {
 
 		private String method;
 
-		public Handler(List<AllocationFactor> factors, Sequence seq,
-				String method) {
-			super(factors, seq);
+		public Handler(Sequence seq, String method) {
+			super(seq);
 			this.method = method;
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_allocation_factors(id, "
+					+ "allocation_type, value, f_process, f_product) "
+					+ "VALUES (?, ?, ?, ?, ?)";
 		}
 
 		@Override

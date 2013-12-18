@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class FlowPropertyFactor {
 
@@ -22,20 +21,23 @@ class FlowPropertyFactor {
 			throws Exception {
 		String query = "SELECT * FROM tbl_flowpropertyfactors";
 		Mapper<FlowPropertyFactor> mapper = new Mapper<>(
-				FlowPropertyFactor.class);
-		List<FlowPropertyFactor> props = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_flow_property_factors(id, "
-				+ "conversion_factor, f_flow, f_flow_property) "
-				+ "VALUES (?, ?, ?, ?)";
-		Handler handler = new Handler(props, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, props.size(), handler);
+				FlowPropertyFactor.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
 	private static class Handler extends
-			AbstractInsertHandler<FlowPropertyFactor> {
+			UpdateHandler<FlowPropertyFactor> {
 
-		public Handler(List<FlowPropertyFactor> props, Sequence seq) {
-			super(props, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_flow_property_factors(id, "
+					+ "conversion_factor, f_flow, f_flow_property) "
+					+ "VALUES (?, ?, ?, ?)";
 		}
 
 		@Override

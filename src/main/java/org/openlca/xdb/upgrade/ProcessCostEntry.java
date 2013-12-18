@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class ProcessCostEntry {
 
@@ -24,20 +23,24 @@ class ProcessCostEntry {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_product_cost_entries";
-		Mapper<ProcessCostEntry> mapper = new Mapper<>(ProcessCostEntry.class);
-		List<ProcessCostEntry> costs = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_process_cost_entries(id, f_process, "
-				+ "f_exchange, f_cost_category, amount) "
-				+ "VALUES (?, ?, ?, ?, ?)";
-		Handler handler = new Handler(costs, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, costs.size(), handler);
+		Mapper<ProcessCostEntry> mapper = new Mapper<>(ProcessCostEntry
+				.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
 	private static class Handler extends
-			AbstractInsertHandler<ProcessCostEntry> {
+			UpdateHandler<ProcessCostEntry> {
 
-		public Handler(List<ProcessCostEntry> costs, Sequence seq) {
-			super(costs, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_process_cost_entries(id, f_process, "
+					+ "f_exchange, f_cost_category, amount) "
+					+ "VALUES (?, ?, ?, ?, ?)";
 		}
 
 		@Override

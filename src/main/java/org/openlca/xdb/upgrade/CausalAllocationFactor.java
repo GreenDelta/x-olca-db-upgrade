@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class CausalAllocationFactor {
 
@@ -24,20 +23,23 @@ class CausalAllocationFactor {
 				+ "tbl_allocationfactors a join tbl_exchanges e "
 				+ "on a.productid = e.id";
 		Mapper<CausalAllocationFactor> mapper = new Mapper<>(
-				CausalAllocationFactor.class);
-		List<CausalAllocationFactor> factors = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_allocation_factors(id, "
-				+ "allocation_type, value, f_process, f_product, f_exchange) "
-				+ "VALUES (?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(factors, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, factors.size(), handler);
+				CausalAllocationFactor.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
 	private static class Handler extends
-			AbstractInsertHandler<CausalAllocationFactor> {
+			UpdateHandler<CausalAllocationFactor> {
 
-		public Handler(List<CausalAllocationFactor> factors, Sequence seq) {
-			super(factors, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_allocation_factors(id, "
+					+ "allocation_type, value, f_process, f_product, f_exchange) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

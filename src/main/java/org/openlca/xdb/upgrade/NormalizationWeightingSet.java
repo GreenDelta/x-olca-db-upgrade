@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class NormalizationWeightingSet {
 
@@ -22,25 +21,28 @@ class NormalizationWeightingSet {
 			throws Exception {
 		String query = "SELECT * FROM tbl_normalizationweightingsets";
 		Mapper<NormalizationWeightingSet> mapper = new Mapper<>(
-				NormalizationWeightingSet.class);
-		List<NormalizationWeightingSet> nwSets = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_normalisation_weighting_sets(id, "
-				+ "reference_system, f_impact_method, unit) "
-				+ "VALUES (?, ?, ?, ?)";
-		Handler handler = new Handler(nwSets, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, nwSets.size(), handler);
+				NormalizationWeightingSet.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
 	private static class Handler extends
-			AbstractInsertHandler<NormalizationWeightingSet> {
+			UpdateHandler<NormalizationWeightingSet> {
 
-		public Handler(List<NormalizationWeightingSet> nwSets, Sequence seq) {
-			super(nwSets, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_normalisation_weighting_sets(id, "
+					+ "reference_system, f_impact_method, unit) "
+					+ "VALUES (?, ?, ?, ?)";
 		}
 
 		@Override
 		protected void map(NormalizationWeightingSet nwSet,
-				PreparedStatement stmt) throws SQLException {
+		                   PreparedStatement stmt) throws SQLException {
 			// id
 			stmt.setInt(1, seq.get(Sequence.NW_SET, nwSet.id));
 			// reference_system

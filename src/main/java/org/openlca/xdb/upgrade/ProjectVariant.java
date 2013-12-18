@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 class ProjectVariant {
@@ -16,61 +15,64 @@ class ProjectVariant {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_projects";
-		Mapper<ProjectVariant> mapper = new Mapper<>(ProjectVariant.class);
-		List<ProjectVariant> variants = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_project_variants(id, f_project, "
-				+ "name, f_product_system) " + "VALUES (?, ?, ?, ?)";
-		Handler handler = new Handler(NewVariant.create(variants, seq), seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, variants.size(), handler);
-	}
-
-	private static class NewVariant {
-
-		private int id;
-		private int projectId;
-		private String name;
-		private int systemId;
-
-		static List<NewVariant> create(List<ProjectVariant> oldProjects,
-				Sequence seq) {
-			List<NewVariant> newVariants = new ArrayList<>();
-			for (ProjectVariant oldProject : oldProjects) {
-				String oldSystemIds = oldProject.productsystems;
-				if (oldSystemIds == null || oldSystemIds.isEmpty())
-					continue;
-				int i = 0;
-				for (String oldSystemId : oldSystemIds.split(";")) {
-					NewVariant newVariant = new NewVariant();
-					newVariant.id = seq.next();
-					newVariant.projectId = seq.get(Sequence.PROJECT,
-							oldProject.id);
-					newVariant.name = "Variant " + (++i);
-					newVariant.systemId = seq.get(Sequence.PRODUCT_SYSTEM,
-							oldSystemId);
-					newVariants.add(newVariant);
-				}
+		Mapper<ProjectVariant> mapper = new Mapper<>(ProjectVariant.class,
+				oldDb, newDb);
+		List<ProjectVariant> projects = mapper.getAll(oldDb, query);
+		for (ProjectVariant oldProject : projects) {
+			String oldSystemIds = oldProject.productsystems;
+			if (oldSystemIds == null || oldSystemIds.trim().isEmpty())
+				continue;
+			StringBuilder idList = new StringBuilder();
+			String[] ids = oldSystemIds.split(";");
+			for (int i = 0; i < ids.length; i++) {
+				idList.append("'").append(ids[i]).append("'");
+				if (i < (ids.length - 1))
+					idList.append(",");
 			}
-			return newVariants;
+			String sysQuery = "SELECT * FROM tbl_productsystems WHERE id IN ("
+					+ idList.toString() + ")";
+			Mapper<ProductSystem> sysMapper = new Mapper<>(
+					ProductSystem.class, oldDb, newDb);
+			Handler handler = new Handler(seq, oldProject.id);
+			sysMapper.mapAll(sysQuery, handler);
 		}
 	}
 
-	private static class Handler extends AbstractInsertHandler<NewVariant> {
+	private static class Handler extends UpdateHandler<ProductSystem> {
 
-		public Handler(List<NewVariant> variants, Sequence seq) {
-			super(variants, seq);
+		private String oldProjectId;
+
+		public Handler(Sequence seq, String oldProjectId) {
+			super(seq);
+			this.oldProjectId = oldProjectId;
 		}
 
 		@Override
-		protected void map(NewVariant variant, PreparedStatement stmt)
+		public String getStatement() {
+			return "INSERT INTO tbl_project_variants(id, f_project, "
+					+ "name, f_product_system, f_unit, "
+					+ "f_flow_property_factor, amount) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
+		}
+
+		@Override
+		protected void map(ProductSystem system, PreparedStatement stmt)
 				throws SQLException {
 			// id
-			stmt.setInt(1, variant.id);
+			stmt.setInt(1, seq.next());
 			// f_project
-			stmt.setInt(2, variant.projectId);
+			stmt.setInt(2, seq.get(Sequence.PROJECT, oldProjectId));
 			// name
-			stmt.setString(3, variant.name);
+			stmt.setString(3, system.name);
 			// f_product_system
-			stmt.setInt(4, variant.systemId);
+			stmt.setInt(4, seq.get(Sequence.PRODUCT_SYSTEM, system.id));
+			// f_unit
+			stmt.setInt(5, seq.get(Sequence.UNIT, system.f_targetunit));
+			// f_flow_property_factor
+			stmt.setInt(6, seq.get(Sequence.FLOW_PROPERTY_FACTOR,
+					system.f_targetflowpropertyfactor));
+			// amount
+			stmt.setDouble(7, system.targetamount);
 		}
 	}
 }

@@ -40,20 +40,23 @@ class Project {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_projects";
-		Mapper<Project> mapper = new Mapper<>(Project.class);
-		List<Project> projects = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_projects(id, ref_id, name, "
-				+ "description, f_category, creation_date, functional_unit, "
-				+ "last_modification_date, goal, f_author, f_impact_method, "
-				+ "f_nwset) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(projects, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, projects.size(), handler);
+		Mapper<Project> mapper = new Mapper<>(Project.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<Project> {
+	private static class Handler extends UpdateHandler<Project> {
 
-		public Handler(List<Project> projects, Sequence seq) {
-			super(projects, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_projects(id, ref_id, name, "
+					+ "description, f_category, creation_date, functional_unit, "
+					+ "last_modification_date, goal, f_author, f_impact_method, "
+					+ "f_nwset) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

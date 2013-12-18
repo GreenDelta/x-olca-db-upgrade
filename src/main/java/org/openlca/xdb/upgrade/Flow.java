@@ -3,7 +3,6 @@ package org.openlca.xdb.upgrade;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 class Flow {
 
@@ -40,20 +39,23 @@ class Flow {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence index)
 			throws Exception {
 		String query = "SELECT * FROM tbl_flows";
-		Mapper<Flow> mapper = new Mapper<>(Flow.class);
-		List<Flow> list = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_flows(id, ref_id, name, f_category, "
-				+ "description, flow_type, infrastructure_flow, cas_number, "
-				+ "formula, f_reference_flow_property, f_location) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(list, index);
-		NativeSql.on(newDb).batchInsert(insertStmt, list.size(), handler);
+		Mapper<Flow> mapper = new Mapper<>(Flow.class, oldDb, newDb);
+		Handler handler = new Handler(index);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<Flow> {
+	private static class Handler extends UpdateHandler<Flow> {
 
-		public Handler(List<Flow> list, Sequence seq) {
-			super(list, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_flows(id, ref_id, name, f_category, "
+					+ "description, flow_type, infrastructure_flow, cas_number, "
+					+ "formula, f_reference_flow_property, f_location) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -80,14 +82,14 @@ class Flow {
 
 		private String mapType(int flowType) {
 			switch (flowType) {
-			case 0:
-				return "ELEMENTARY_FLOW";
-			case 1:
-				return "PRODUCT_FLOW";
-			case 2:
-				return "WASTE_FLOW";
-			default:
-				return "PRODUCT_FLOW";
+				case 0:
+					return "ELEMENTARY_FLOW";
+				case 1:
+					return "PRODUCT_FLOW";
+				case 2:
+					return "WASTE_FLOW";
+				default:
+					return "PRODUCT_FLOW";
 			}
 		}
 	}

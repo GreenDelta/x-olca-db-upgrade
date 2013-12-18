@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class Process {
 
@@ -39,21 +38,24 @@ class Process {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_processes";
-		Mapper<Process> mapper = new Mapper<>(Process.class);
-		List<Process> procs = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_processes(id, ref_id, name, "
-				+ "f_category, description, process_type, "
-				+ "default_allocation_method, infrastructure_process, "
-				+ "f_quantitative_reference, f_location, f_process_doc) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(procs, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, procs.size(), handler);
+		Mapper<Process> mapper = new Mapper<>(Process.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<Process> {
+	private static class Handler extends UpdateHandler<Process> {
 
-		public Handler(List<Process> procs, Sequence seq) {
-			super(procs, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_processes(id, ref_id, name, "
+					+ "f_category, description, process_type, "
+					+ "default_allocation_method, infrastructure_process, "
+					+ "f_quantitative_reference, f_location, f_process_doc) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -95,16 +97,16 @@ class Process {
 			if (allocationMethod == null)
 				return null;
 			switch (allocationMethod) {
-			case 0:
-				return "CAUSAL";
-			case 1:
-				return "ECONOMIC";
-			case 2:
-				return "NONE";
-			case 3:
-				return "PHYSICAL";
-			default:
-				return "NONE";
+				case 0:
+					return "CAUSAL";
+				case 1:
+					return "ECONOMIC";
+				case 2:
+					return "NONE";
+				case 3:
+					return "PHYSICAL";
+				default:
+					return "NONE";
 			}
 		}
 	}

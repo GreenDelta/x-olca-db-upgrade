@@ -3,7 +3,6 @@ package org.openlca.xdb.upgrade;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class ProcessDoc {
 
@@ -113,25 +112,28 @@ class ProcessDoc {
 				+ "join tbl_modelingandvalidations m on m.id = a.id "
 				+ "join tbl_technologies t on t.id = m.id "
 				+ "join tbl_times i on i.id = t.id ";
-		Mapper<ProcessDoc> mapper = new Mapper<>(ProcessDoc.class);
-		List<ProcessDoc> docs = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_process_docs(id, geography, "
-				+ "technology, time, valid_from, valid_until, modeling_constants, "
-				+ "data_treatment, sampling, completeness, review_details, "
-				+ "inventory_method, data_collection_period, data_selection, "
-				+ "f_reviewer, project, creation_date, intended_application, "
-				+ "restrictions, copyright, last_change, version, f_data_generator, "
-				+ "f_dataset_owner, f_data_documentor, f_publication) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-				+ "?, ?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(docs, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, docs.size(), handler);
+		Mapper<ProcessDoc> mapper = new Mapper<>(ProcessDoc.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<ProcessDoc> {
+	private static class Handler extends UpdateHandler<ProcessDoc> {
 
-		public Handler(List<ProcessDoc> docs, Sequence seq) {
-			super(docs, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_process_docs(id, geography, "
+					+ "technology, time, valid_from, valid_until, modeling_constants, "
+					+ "data_treatment, sampling, completeness, review_details, "
+					+ "inventory_method, data_collection_period, data_selection, "
+					+ "f_reviewer, project, creation_date, intended_application, "
+					+ "restrictions, copyright, last_change, version, f_data_generator, "
+					+ "f_dataset_owner, f_data_documentor, f_publication) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+					+ "?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

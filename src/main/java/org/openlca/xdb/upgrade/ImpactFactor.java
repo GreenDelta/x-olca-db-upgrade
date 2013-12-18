@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class ImpactFactor {
 
@@ -39,21 +38,25 @@ class ImpactFactor {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_lciafactors";
-		Mapper<ImpactFactor> mapper = new Mapper<>(ImpactFactor.class);
-		List<ImpactFactor> factors = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_impact_factors(id, f_impact_category, "
-				+ "f_flow, f_flow_property_factor, f_unit, value, distribution_type, "
-				+ "parameter1_value, parameter1_formula, parameter2_value, "
-				+ "parameter2_formula, parameter3_value, parameter3_formula) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(factors, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, factors.size(), handler);
+		Mapper<ImpactFactor> mapper = new Mapper<>(ImpactFactor.class, oldDb,
+				newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<ImpactFactor> {
+	private static class Handler extends UpdateHandler<ImpactFactor> {
 
-		public Handler(List<ImpactFactor> factors, Sequence seq) {
-			super(factors, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_impact_factors(id, f_impact_category, "
+					+ "f_flow, f_flow_property_factor, f_unit, value, distribution_type, "
+					+ "parameter1_value, parameter1_formula, parameter2_value, "
+					+ "parameter2_formula, parameter3_value, parameter3_formula) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

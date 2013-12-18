@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class ProductSystemProcess {
 
@@ -16,19 +15,22 @@ class ProductSystemProcess {
 			throws Exception {
 		String query = "SELECT * FROM tbl_productsystem_process";
 		Mapper<ProductSystemProcess> mapper = new Mapper<>(
-				ProductSystemProcess.class);
-		List<ProductSystemProcess> procs = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_product_system_processes("
-				+ "f_product_system, f_process) " + "VALUES (?, ?)";
-		Handler handler = new Handler(procs, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, procs.size(), handler);
+				ProductSystemProcess.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
 	private static class Handler extends
-			AbstractInsertHandler<ProductSystemProcess> {
+			UpdateHandler<ProductSystemProcess> {
 
-		public Handler(List<ProductSystemProcess> procs, Sequence seq) {
-			super(procs, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_product_system_processes("
+					+ "f_product_system, f_process) " + "VALUES (?, ?)";
 		}
 
 		@Override

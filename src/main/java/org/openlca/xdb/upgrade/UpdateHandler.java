@@ -6,14 +6,19 @@ import java.util.List;
 
 import org.openlca.xdb.upgrade.NativeSql.BatchInsertHandler;
 
-abstract class AbstractInsertHandler<T> implements BatchInsertHandler {
+abstract class UpdateHandler<T> implements BatchInsertHandler {
 
 	private List<T> elements;
 	protected Sequence seq;
 
-	public AbstractInsertHandler(List<T> elements, Sequence sequence) {
-		this.elements = elements;
+	public UpdateHandler(Sequence sequence) {
 		this.seq = sequence;
+	}
+
+	public abstract String getStatement();
+
+	public void nextBatch(List<T> elements) {
+		this.elements = elements;
 	}
 
 	@Override

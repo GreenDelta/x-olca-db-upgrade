@@ -3,7 +3,6 @@ package org.openlca.xdb.upgrade;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 class Parameter {
 
@@ -34,19 +33,22 @@ class Parameter {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_parameters where type <> 1";
-		Mapper<Parameter> mapper = new Mapper<>(Parameter.class);
-		List<Parameter> parameters = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_parameters(id, name, description, "
-				+ "is_input_param, f_owner, scope, value, formula) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(parameters, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, parameters.size(), handler);
+		Mapper<Parameter> mapper = new Mapper<>(Parameter.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<Parameter> {
+	private static class Handler extends UpdateHandler<Parameter> {
 
-		public Handler(List<Parameter> parameters, Sequence seq) {
-			super(parameters, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_parameters(id, name, description, "
+					+ "is_input_param, f_owner, scope, value, formula) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

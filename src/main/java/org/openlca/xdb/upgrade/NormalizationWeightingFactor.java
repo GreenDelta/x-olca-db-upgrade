@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class NormalizationWeightingFactor {
 
@@ -25,26 +24,28 @@ class NormalizationWeightingFactor {
 			throws Exception {
 		String query = "SELECT * FROM tbl_normalizationweightingfactors";
 		Mapper<NormalizationWeightingFactor> mapper = new Mapper<>(
-				NormalizationWeightingFactor.class);
-		List<NormalizationWeightingFactor> factors = mapper
-				.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_normalisation_weighting_factors(id, "
-				+ "weighting_factor, normalisation_factor, f_impact_category, "
-				+ "f_normalisation_weighting_set) " + "VALUES (?, ?, ?, ?, ?)";
-		Handler handler = new Handler(factors, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, factors.size(), handler);
+				NormalizationWeightingFactor.class, oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
 	private static class Handler extends
-			AbstractInsertHandler<NormalizationWeightingFactor> {
+			UpdateHandler<NormalizationWeightingFactor> {
 
-		public Handler(List<NormalizationWeightingFactor> factors, Sequence seq) {
-			super(factors, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_normalisation_weighting_factors(id, "
+					+ "weighting_factor, normalisation_factor, f_impact_category, "
+					+ "f_normalisation_weighting_set) " + "VALUES (?, ?, ?, ?, ?)";
 		}
 
 		@Override
 		protected void map(NormalizationWeightingFactor factor,
-				PreparedStatement stmt) throws SQLException {
+		                   PreparedStatement stmt) throws SQLException {
 			// id
 			stmt.setInt(1, seq.next());
 			// weighting_factor

@@ -2,6 +2,7 @@
 
 # IDE settings
 /.idea
+*.iml
 
 # derby logs
 *.log

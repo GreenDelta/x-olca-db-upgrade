@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class ProcessLink {
 
@@ -31,18 +30,22 @@ class ProcessLink {
 			throws Exception {
 		String query = "SELECT l.*, e.f_flow FROM tbl_processlinks l "
 				+ "join tbl_exchanges e on l.f_provideroutput = e.id";
-		Mapper<ProcessLink> mapper = new Mapper<>(ProcessLink.class);
-		List<ProcessLink> linkss = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_process_links(f_product_system, "
-				+ "f_provider, f_recipient, f_flow) " + "VALUES (?, ?, ?, ?)";
-		Handler handler = new Handler(linkss, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, linkss.size(), handler);
+		Mapper<ProcessLink> mapper = new Mapper<>(ProcessLink.class, oldDb,
+				newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<ProcessLink> {
+	private static class Handler extends UpdateHandler<ProcessLink> {
 
-		public Handler(List<ProcessLink> linkss, Sequence seq) {
-			super(linkss, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_process_links(f_product_system, "
+					+ "f_provider, f_recipient, f_flow) " + "VALUES (?, ?, ?, ?)";
 		}
 
 		@Override

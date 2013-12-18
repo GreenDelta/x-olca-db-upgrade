@@ -3,7 +3,6 @@ package org.openlca.xdb.upgrade;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 class UnitGroup {
 
@@ -28,19 +27,22 @@ class UnitGroup {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence index)
 			throws Exception {
 		String query = "SELECT * FROM tbl_unitgroups";
-		Mapper<UnitGroup> mapper = new Mapper<>(UnitGroup.class);
-		List<UnitGroup> groups = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_unit_groups(id, ref_id, name, "
-				+ "f_category, description, f_reference_unit, "
-				+ "f_default_flow_property) " + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-		InsertHandler handler = new InsertHandler(groups, index);
-		NativeSql.on(newDb).batchInsert(insertStmt, groups.size(), handler);
+		Mapper<UnitGroup> mapper = new Mapper<>(UnitGroup.class, oldDb, newDb);
+		InsertHandler handler = new InsertHandler(index);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class InsertHandler extends AbstractInsertHandler<UnitGroup> {
+	private static class InsertHandler extends UpdateHandler<UnitGroup> {
 
-		public InsertHandler(List<UnitGroup> groups, Sequence seq) {
-			super(groups, seq);
+		public InsertHandler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_unit_groups(id, ref_id, name, "
+					+ "f_category, description, f_reference_unit, "
+					+ "f_default_flow_property) " + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

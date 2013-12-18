@@ -53,7 +53,7 @@ println """
 
 println """
 
-    private static class Handler extends AbstractInsertHandler<$type> {
+    private static class Handler extends UpdateHandler<$type> {
 
         public Handler(List<$type> ${var}s, Sequence seq) {
             super(${var}s, seq);

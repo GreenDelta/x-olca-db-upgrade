@@ -3,7 +3,6 @@ package org.openlca.xdb.upgrade;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 class FlowProperty {
 
@@ -28,19 +27,23 @@ class FlowProperty {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence index)
 			throws Exception {
 		String query = "SELECT * FROM tbl_flowproperties";
-		Mapper<FlowProperty> mapper = new Mapper<>(FlowProperty.class);
-		List<FlowProperty> props = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_flow_properties(id, ref_id, name, "
-				+ "f_category, description, flow_property_type, f_unit_group) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(props, index);
-		NativeSql.on(newDb).batchInsert(insertStmt, props.size(), handler);
+		Mapper<FlowProperty> mapper = new Mapper<>(FlowProperty.class, oldDb,
+				newDb);
+		Handler handler = new Handler(index);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<FlowProperty> {
+	private static class Handler extends UpdateHandler<FlowProperty> {
 
-		public Handler(List<FlowProperty> props, Sequence seq) {
-			super(props, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_flow_properties(id, ref_id, name, "
+					+ "f_category, description, flow_property_type, f_unit_group) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override

@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class ImpactCategory {
 
@@ -24,19 +23,23 @@ class ImpactCategory {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_lciacategories";
-		Mapper<ImpactCategory> mapper = new Mapper<>(ImpactCategory.class);
-		List<ImpactCategory> cats = mapper.mapAll(oldDb, query);
-		String insertStmt = "INSERT INTO tbl_impact_categories(id, ref_id, "
-				+ "description, name, reference_unit, f_impact_method) "
-				+ "VALUES (?, ?, ?, ?, ?, ?)";
-		Handler handler = new Handler(cats, seq);
-		NativeSql.on(newDb).batchInsert(insertStmt, cats.size(), handler);
+		Mapper<ImpactCategory> mapper = new Mapper<>(ImpactCategory.class,
+				oldDb, newDb);
+		Handler handler = new Handler(seq);
+		mapper.mapAll(query, handler);
 	}
 
-	private static class Handler extends AbstractInsertHandler<ImpactCategory> {
+	private static class Handler extends UpdateHandler<ImpactCategory> {
 
-		public Handler(List<ImpactCategory> cats, Sequence seq) {
-			super(cats, seq);
+		public Handler(Sequence seq) {
+			super(seq);
+		}
+
+		@Override
+		public String getStatement() {
+			return "INSERT INTO tbl_impact_categories(id, ref_id, "
+					+ "description, name, reference_unit, f_impact_method) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
