@@ -11,7 +11,7 @@ import com.jolbox.bonecp.BoneCPConfig;
 
 /**
  * IDatabase implementation for MySQL database. The URL schema is
- * "jdbc:mysql://" [host] ":" [port] "/" [database]
+ * "jdbc:mysql://" [host] ":" [port] "/" [database].
  */
 public class MySQLDatabase implements IDatabase {
 

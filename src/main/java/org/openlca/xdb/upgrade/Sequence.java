@@ -28,7 +28,7 @@ class Sequence {
 
 	@SuppressWarnings("unchecked")
 	public Sequence() {
-		sequences = new HashMap[16];
+		sequences = new HashMap[17];
 		for (int i = 0; i < sequences.length; i++)
 			sequences[i] = new HashMap<>();
 	}

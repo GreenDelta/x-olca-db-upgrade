@@ -37,3 +37,27 @@ multi-output processes should checked by the user after the conversion.
 Open issues
 -----------
 Process groups (from the analysis editor) are currently not mapped.
+
+Usage
+-----
+You can migrate an openLCA 1.3.x MySQL database to an openLCA 1.4 MySQL
+database:
+
+     String oldDbUrl = "jdbc:mysql://localhost:3306/old_database";
+     IDatabase oldDb = new MySQLDatabase(oldDbUrl, "root", "");
+     String newDbUrl = "jdbc:mysql://localhost:3306/new_database";
+     IDatabase newDb = new MySQLDatabase(newDbUrl, "root", "");
+     Update update = new Update(oldDb, newDb);
+     update.run();
+     oldDb.close();
+     newDb.close();
+
+Additionally, you can export an openLCA 1.3.x MySQL database to an openLCA 1.4
+Derby database which is packed during the export into an `zolca` file:
+
+     String oldDbUrl = "jdbc:mysql://localhost:3306/old_database";
+     IDatabase oldDb = new MySQLDatabase(oldDbUrl, "root", "");
+     File exportFile = new File("C:/.../new_database.zolca");
+     FileExport fileExport = new FileExport(oldDb, exportFile);
+     fileExport.run();
+     oldDb.close();

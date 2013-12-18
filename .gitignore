@@ -1,4 +1,9 @@
 /target
+
+# IDE settings
+/.idea
+
+# derby logs
 *.log
 
 # openLCA database exchange files
