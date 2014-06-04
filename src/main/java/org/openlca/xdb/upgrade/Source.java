@@ -43,8 +43,9 @@ class Source {
 		@Override
 		public String getStatement() {
 			return "INSERT INTO tbl_sources(id, ref_id, description, "
-					+ "f_category, name, source_year, text_reference, doi) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "f_category, name, source_year, text_reference, doi, "
+					+ "last_change, version) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -61,6 +62,8 @@ class Source {
 			stmt.setInt(6, source.year);
 			stmt.setString(7, source.textreference);
 			stmt.setString(8, source.doi);
+			stmt.setLong(9, System.currentTimeMillis());
+			stmt.setLong(10, 4294967296L);
 		}
 	}
 }

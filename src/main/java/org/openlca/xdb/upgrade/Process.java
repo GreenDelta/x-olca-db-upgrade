@@ -54,8 +54,9 @@ class Process {
 			return "INSERT INTO tbl_processes(id, ref_id, name, "
 					+ "f_category, description, process_type, "
 					+ "default_allocation_method, infrastructure_process, "
-					+ "f_quantitative_reference, f_location, f_process_doc) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "f_quantitative_reference, f_location, f_process_doc, "
+					+ "last_change, version) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -91,22 +92,24 @@ class Process {
 				stmt.setInt(10, seq.get(Sequence.LOCATION, proc.locationId));
 			// f_process_doc
 			stmt.setInt(11, seq.get(Sequence.PROCESS, proc.id));
+			stmt.setLong(12, System.currentTimeMillis());
+			stmt.setLong(13, 4294967296L);
 		}
 
 		private String mapAllocationMethod(Integer allocationMethod) {
 			if (allocationMethod == null)
 				return null;
 			switch (allocationMethod) {
-				case 0:
-					return "CAUSAL";
-				case 1:
-					return "ECONOMIC";
-				case 2:
-					return "NONE";
-				case 3:
-					return "PHYSICAL";
-				default:
-					return "NONE";
+			case 0:
+				return "CAUSAL";
+			case 1:
+				return "ECONOMIC";
+			case 2:
+				return "NONE";
+			case 3:
+				return "PHYSICAL";
+			default:
+				return "NONE";
 			}
 		}
 	}

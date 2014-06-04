@@ -54,8 +54,9 @@ class Flow {
 		public String getStatement() {
 			return "INSERT INTO tbl_flows(id, ref_id, name, f_category, "
 					+ "description, flow_type, infrastructure_flow, cas_number, "
-					+ "formula, f_reference_flow_property, f_location) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "formula, f_reference_flow_property, f_location, "
+					+ "last_change, version) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -78,18 +79,20 @@ class Flow {
 				stmt.setNull(11, Types.INTEGER);
 			else
 				stmt.setInt(11, seq.get(Sequence.LOCATION, flow.locationId));
+			stmt.setLong(12, System.currentTimeMillis());
+			stmt.setLong(13, 4294967296L);
 		}
 
 		private String mapType(int flowType) {
 			switch (flowType) {
-				case 0:
-					return "ELEMENTARY_FLOW";
-				case 1:
-					return "PRODUCT_FLOW";
-				case 2:
-					return "WASTE_FLOW";
-				default:
-					return "PRODUCT_FLOW";
+			case 0:
+				return "ELEMENTARY_FLOW";
+			case 1:
+				return "PRODUCT_FLOW";
+			case 2:
+				return "WASTE_FLOW";
+			default:
+				return "PRODUCT_FLOW";
 			}
 		}
 	}

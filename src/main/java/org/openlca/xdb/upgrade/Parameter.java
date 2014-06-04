@@ -61,7 +61,8 @@ class Parameter {
 			// description
 			stmt.setString(3, parameter.description);
 			// is_input_param
-			stmt.setBoolean(4, !parameter.expression_parametrized);
+			boolean isInput = isInputParameter(parameter);
+			stmt.setBoolean(4, isInput);
 			// f_owner
 			if (parameter.type == 0)
 				stmt.setInt(5, seq.get(Sequence.PROCESS, parameter.f_owner));
@@ -75,11 +76,25 @@ class Parameter {
 			// value
 			stmt.setDouble(7, parameter.expression_value);
 			// formula
-			if (parameter.expression_parametrized)
+			if (!isInput)
 				stmt.setString(8, parameter.expression_formula);
 			else
 				stmt.setString(8, null);
 		}
+
+		private boolean isInputParameter(Parameter parameter) {
+			if (parameter == null)
+				return false;
+			if (parameter.expression_formula == null)
+				return true;
+			try {
+				Double.parseDouble(parameter.expression_formula);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+
 	}
 
 }

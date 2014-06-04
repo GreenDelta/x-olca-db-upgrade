@@ -3,7 +3,6 @@ package org.openlca.xdb.upgrade;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class Project {
 
@@ -56,7 +55,8 @@ class Project {
 			return "INSERT INTO tbl_projects(id, ref_id, name, "
 					+ "description, f_category, creation_date, functional_unit, "
 					+ "last_modification_date, goal, f_author, f_impact_method, "
-					+ "f_nwset) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "f_nwset, last_change, version) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -92,6 +92,8 @@ class Project {
 			stmt.setNull(11, java.sql.Types.INTEGER);
 			// f_nwset
 			stmt.setNull(12, java.sql.Types.INTEGER);
+			stmt.setLong(13, System.currentTimeMillis());
+			stmt.setLong(14, 4294967296L);
 		}
 	}
 }

@@ -35,22 +35,23 @@ class NormalizationWeightingSet {
 
 		@Override
 		public String getStatement() {
-			return "INSERT INTO tbl_normalisation_weighting_sets(id, "
-					+ "reference_system, f_impact_method, unit) "
-					+ "VALUES (?, ?, ?, ?)";
+			return "INSERT INTO tbl_nw_sets (id, "
+					+ "name, f_impact_method, weighted_score_unit, ref_id) "
+					+ "VALUES (?, ?, ?, ?, ?)";
 		}
 
 		@Override
 		protected void map(NormalizationWeightingSet nwSet,
-		                   PreparedStatement stmt) throws SQLException {
+				PreparedStatement stmt) throws SQLException {
 			// id
 			stmt.setInt(1, seq.get(Sequence.NW_SET, nwSet.id));
-			// reference_system
+			// name
 			stmt.setString(2, nwSet.referencesystem);
 			// f_impact_method
 			stmt.setInt(3, seq.get(Sequence.IMPACT_METHOD, nwSet.f_lciamethod));
-			// unit
+			// weighted_score_unit
 			stmt.setString(4, nwSet.unit);
+			stmt.setString(5, nwSet.f_lciamethod);
 		}
 	}
 }

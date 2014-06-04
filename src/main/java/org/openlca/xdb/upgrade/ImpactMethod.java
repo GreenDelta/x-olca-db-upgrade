@@ -35,7 +35,8 @@ class ImpactMethod {
 		@Override
 		public String getStatement() {
 			return "INSERT INTO tbl_impact_methods(id, ref_id, "
-					+ "description, f_category, name) " + "VALUES (?, ?, ?, ?, ?)";
+					+ "description, f_category, name, last_change, version) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -54,6 +55,8 @@ class ImpactMethod {
 				stmt.setInt(4, seq.get(Sequence.CATEGORY, method.categoryid));
 			// name
 			stmt.setString(5, method.name);
+			stmt.setLong(6, System.currentTimeMillis());
+			stmt.setLong(7, 4294967296L);
 		}
 	}
 }

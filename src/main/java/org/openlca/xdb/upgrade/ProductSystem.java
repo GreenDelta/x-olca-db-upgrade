@@ -35,8 +35,8 @@ class ProductSystem {
 	public static void map(IDatabase oldDb, IDatabase newDb, Sequence seq)
 			throws Exception {
 		String query = "SELECT * FROM tbl_productsystems";
-		Mapper<ProductSystem> mapper = new Mapper<>(ProductSystem.class,
-				oldDb, newDb);
+		Mapper<ProductSystem> mapper = new Mapper<>(ProductSystem.class, oldDb,
+				newDb);
 		Handler handler = new Handler(seq);
 		mapper.mapAll(query, handler);
 	}
@@ -51,7 +51,8 @@ class ProductSystem {
 		public String getStatement() {
 			return "INSERT INTO tbl_product_systems(id, ref_id, name, "
 					+ "description, f_category, target_amount, f_reference_process, "
-					+ "f_reference_exchange, f_target_flow_property_factor, f_target_unit) "
+					+ "f_reference_exchange, f_target_flow_property_factor, "
+					+ "f_target_unit, last_change, version) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
@@ -84,6 +85,8 @@ class ProductSystem {
 					system.f_targetflowpropertyfactor));
 			// f_target_unit
 			stmt.setInt(10, seq.get(Sequence.UNIT, system.f_targetunit));
+			stmt.setLong(11, System.currentTimeMillis());
+			stmt.setLong(12, 4294967296L);
 		}
 	}
 }

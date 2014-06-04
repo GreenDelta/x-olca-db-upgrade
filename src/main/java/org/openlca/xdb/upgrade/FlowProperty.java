@@ -42,8 +42,9 @@ class FlowProperty {
 		@Override
 		public String getStatement() {
 			return "INSERT INTO tbl_flow_properties(id, ref_id, name, "
-					+ "f_category, description, flow_property_type, f_unit_group) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
+					+ "f_category, description, flow_property_type, f_unit_group,"
+					+ "last_change, version) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -59,6 +60,8 @@ class FlowProperty {
 			stmt.setString(5, prop.description);
 			stmt.setInt(6, prop.type);
 			stmt.setInt(7, seq.get(Sequence.UNIT_GROUP, prop.unitGroupId));
+			stmt.setLong(8, System.currentTimeMillis());
+			stmt.setLong(9, 4294967296L);
 		}
 	}
 

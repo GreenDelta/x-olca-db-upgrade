@@ -2,7 +2,6 @@ package org.openlca.xdb.upgrade;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 class Actor {
 
@@ -60,8 +59,8 @@ class Actor {
 		public String getStatement() {
 			return "INSERT INTO tbl_actors(id, ref_id, telefax, "
 					+ "website, address, description, zip_code, name, f_category, "
-					+ "email, telephone, country, city) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "email, telephone, country, city, last_change, version) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -83,6 +82,8 @@ class Actor {
 			stmt.setString(11, actor.telephone);
 			stmt.setString(12, actor.country);
 			stmt.setString(13, actor.city);
+			stmt.setLong(14, System.currentTimeMillis());
+			stmt.setLong(15, 4294967296L);
 		}
 	}
 }

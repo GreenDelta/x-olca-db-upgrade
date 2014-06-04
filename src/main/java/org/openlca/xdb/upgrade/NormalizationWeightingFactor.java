@@ -38,14 +38,14 @@ class NormalizationWeightingFactor {
 
 		@Override
 		public String getStatement() {
-			return "INSERT INTO tbl_normalisation_weighting_factors(id, "
+			return "INSERT INTO tbl_nw_factors(id, "
 					+ "weighting_factor, normalisation_factor, f_impact_category, "
-					+ "f_normalisation_weighting_set) " + "VALUES (?, ?, ?, ?, ?)";
+					+ "f_nw_set) " + "VALUES (?, ?, ?, ?, ?)";
 		}
 
 		@Override
 		protected void map(NormalizationWeightingFactor factor,
-		                   PreparedStatement stmt) throws SQLException {
+				PreparedStatement stmt) throws SQLException {
 			// id
 			stmt.setInt(1, seq.next());
 			// weighting_factor

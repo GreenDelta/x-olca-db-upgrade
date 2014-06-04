@@ -130,9 +130,9 @@ class ProcessDoc {
 					+ "data_treatment, sampling, completeness, review_details, "
 					+ "inventory_method, data_collection_period, data_selection, "
 					+ "f_reviewer, project, creation_date, intended_application, "
-					+ "restrictions, copyright, last_change, version, f_data_generator, "
+					+ "restrictions, copyright, f_data_generator, "
 					+ "f_dataset_owner, f_data_documentor, f_publication) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  "
 					+ "?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
@@ -182,30 +182,26 @@ class ProcessDoc {
 			stmt.setString(19, doc.accessanduserestrictions);
 			// copyright
 			stmt.setBoolean(20, doc.copyright);
-			// last_change
-			stmt.setDate(21, doc.lastchange);
-			// version
-			stmt.setString(22, doc.version);
 			// f_data_generator
 			if (doc.f_datagenerator == null)
-				stmt.setNull(23, java.sql.Types.INTEGER);
+				stmt.setNull(21, java.sql.Types.INTEGER);
 			else
-				stmt.setInt(23, seq.get(Sequence.ACTOR, doc.f_datagenerator));
+				stmt.setInt(21, seq.get(Sequence.ACTOR, doc.f_datagenerator));
 			// f_dataset_owner
 			if (doc.f_datasetowner == null)
-				stmt.setNull(24, java.sql.Types.INTEGER);
+				stmt.setNull(22, java.sql.Types.INTEGER);
 			else
-				stmt.setInt(24, seq.get(Sequence.ACTOR, doc.f_datasetowner));
+				stmt.setInt(22, seq.get(Sequence.ACTOR, doc.f_datasetowner));
 			// f_data_documentor
 			if (doc.f_datadocumentor == null)
-				stmt.setNull(25, java.sql.Types.INTEGER);
+				stmt.setNull(23, java.sql.Types.INTEGER);
 			else
-				stmt.setInt(25, seq.get(Sequence.ACTOR, doc.f_datadocumentor));
+				stmt.setInt(23, seq.get(Sequence.ACTOR, doc.f_datadocumentor));
 			// f_publication
 			if (doc.f_publication == null)
-				stmt.setNull(26, java.sql.Types.INTEGER);
+				stmt.setNull(24, java.sql.Types.INTEGER);
 			else
-				stmt.setInt(26, seq.get(Sequence.SOURCE, doc.f_publication));
+				stmt.setInt(24, seq.get(Sequence.SOURCE, doc.f_publication));
 		}
 	}
 }

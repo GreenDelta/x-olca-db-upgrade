@@ -42,7 +42,8 @@ class UnitGroup {
 		public String getStatement() {
 			return "INSERT INTO tbl_unit_groups(id, ref_id, name, "
 					+ "f_category, description, f_reference_unit, "
-					+ "f_default_flow_property) " + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+					+ "f_default_flow_property, last_change, version) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
@@ -62,6 +63,8 @@ class UnitGroup {
 			else
 				stmt.setInt(7,
 						seq.get(Sequence.FLOW_PROPERTY, group.defaultPropId));
+			stmt.setLong(8, System.currentTimeMillis());
+			stmt.setLong(9, 4294967296L);
 		}
 
 	}
