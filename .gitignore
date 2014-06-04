@@ -7,5 +7,3 @@
 # derby logs
 *.log
 
-# openLCA database exchange files
-*.zolca
