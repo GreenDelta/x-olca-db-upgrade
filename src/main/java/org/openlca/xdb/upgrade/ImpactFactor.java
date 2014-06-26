@@ -76,8 +76,10 @@ class ImpactFactor {
 			stmt.setInt(5, seq.get(Sequence.UNIT, factor.f_unit));
 			// value
 			stmt.setDouble(6, factor.value);
+
 			// distribution_type
-			stmt.setString(7, factor.uncertainy_type);
+			stmt.setInt(7, getDistributionType(factor.uncertainy_type));
+
 			// parameter1_value
 			if (factor.uncertainty_parameter_1 == null)
 				stmt.setNull(8, java.sql.Types.DOUBLE);
@@ -99,6 +101,25 @@ class ImpactFactor {
 				stmt.setDouble(12, factor.uncertainty_parameter_3);
 			// parameter3_formula
 			stmt.setString(13, null);
+		}
+
+		private int getDistributionType(String type) {
+			if (type == null)
+				return 0;
+			switch (type) {
+			case "NONE":
+				return 0;
+			case "LOG_NORMAL":
+				return 1;
+			case "NORMAL":
+				return 2;
+			case "TRIANGLE":
+				return 3;
+			case "UNIFORM":
+				return 4;
+			default:
+				return 0;
+			}
 		}
 	}
 }

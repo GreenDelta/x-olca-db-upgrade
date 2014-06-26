@@ -53,7 +53,7 @@ class ProductSystem {
 					+ "description, f_category, target_amount, f_reference_process, "
 					+ "f_reference_exchange, f_target_flow_property_factor, "
 					+ "f_target_unit, last_change, version) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		}
 
 		@Override
